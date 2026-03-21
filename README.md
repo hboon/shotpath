@@ -60,9 +60,33 @@ make install-launchagent
 make uninstall
 ```
 
+## Mode Toggle
+
+By default, shotpath copies the **file path** to your clipboard. You can toggle to **image mode** which copies the actual screenshot image instead.
+
+Press `Cmd+Shift+E` to toggle between modes. A notification confirms the switch.
+
+**Note:** The hotkey requires Accessibility access. Grant it in **System Settings > Privacy & Security > Accessibility** for the terminal or process running shotpath.
+
+## Configuration
+
+Settings are stored in `~/.config/shotpath/config.yaml` (created automatically on first run):
+
+```yaml
+# Mode: "path" copies the file path, "image" copies the image data
+mode: path
+
+# Global hotkey to toggle between path and image mode
+# Format: modifier+modifier+key
+# Supported modifiers: cmd, shift, ctrl, option
+hotkey: cmd+shift+e
+```
+
+Edit this file to change the default mode or remap the hotkey to a different combo.
+
 ## How it works
 
-Monitors your screenshot save folder for new files matching the macOS screenshot naming pattern (`Screenshot ... at ... .png`). The folder is read from the `com.apple.screencapture` preference (set via System Settings → Screenshots) and falls back to `~/Desktop` if unset. When a screenshot appears, its absolute path is copied to your clipboard and a notification is shown.
+Monitors your screenshot save folder for new files matching the macOS screenshot naming pattern (`Screenshot ... at ... .png`). The folder is read from the `com.apple.screencapture` preference (set via System Settings → Screenshots) and falls back to `~/Desktop` if unset. When a screenshot appears, either its absolute path or the image data is copied to your clipboard (depending on the current mode) and a notification is shown.
 
 ## Blog Post
 
