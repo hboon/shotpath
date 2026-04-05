@@ -33,7 +33,7 @@ brew services stop hboon/tap/shotpath
 
 ## How it works
 
-Monitors `~/Desktop` for new files matching the macOS screenshot naming pattern (`Screenshot ... at ... .png`). When a screenshot appears, its absolute path is copied to your clipboard and a notification is shown.
+Monitors your screenshot save folder for new files matching the macOS screenshot naming pattern (`Screenshot ... at ... .png`). The folder is read from the `com.apple.screencapture` preference (set via System Settings → Screenshots) and falls back to `~/Desktop` if unset. When a screenshot appears, its absolute path is copied to your clipboard and a notification is shown.
 
 ## Blog Post
 

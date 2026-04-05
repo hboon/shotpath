@@ -1,7 +1,16 @@
 import AppKit
 import CoreServices
 
-let screenshotDir = (NSHomeDirectory() as NSString).appendingPathComponent("Desktop")
+func getScreenshotDir() -> String {
+    // Read com.apple.screencapture location preference (set via System Settings → Screenshots)
+    if let customPath = UserDefaults(suiteName: "com.apple.screencapture")?.string(forKey: "location"),
+       !customPath.isEmpty {
+        return (customPath as NSString).expandingTildeInPath
+    }
+    return (NSHomeDirectory() as NSString).appendingPathComponent("Desktop")
+}
+
+let screenshotDir = getScreenshotDir()
 let pasteboard = NSPasteboard.general
 
 func matchesScreenshotPattern(_ filename: String) -> Bool {
