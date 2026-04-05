@@ -31,6 +31,35 @@ To stop the background service:
 brew services stop hboon/tap/shotpath
 ```
 
+## Build and Install from Source
+
+**Requirements:** Xcode Command Line Tools (`xcode-select --install`)
+
+```sh
+git clone https://github.com/lingster/shotpath.git
+cd shotpath
+make
+sudo make install
+```
+
+The binary is installed to `/usr/local/bin/shotpath`. To use a different prefix:
+
+```sh
+sudo make install PREFIX=/opt/homebrew
+```
+
+**Auto-start at login** (installs a LaunchAgent):
+
+```sh
+make install-launchagent
+```
+
+**Uninstall:**
+
+```sh
+make uninstall
+```
+
 ## How it works
 
 Monitors your screenshot save folder for new files matching the macOS screenshot naming pattern (`Screenshot ... at ... .png`). The folder is read from the `com.apple.screencapture` preference (set via System Settings → Screenshots) and falls back to `~/Desktop` if unset. When a screenshot appears, its absolute path is copied to your clipboard and a notification is shown.
