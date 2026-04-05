@@ -5,8 +5,11 @@ import CoreServices
 
 var currentMode = "path"
 var currentHotkey = "cmd+shift+e"
+let recentScreenshotWindow: TimeInterval = 3
 var hotkeyModifiers: CGEventFlags = [.maskCommand, .maskShift]
 var hotkeyKeyCode: Int64 = 14  // 'e'
+var lastScreenshotPath: String?
+var lastScreenshotDetectedAt: Date?
 
 let pasteboard = NSPasteboard.general
 
@@ -60,7 +63,7 @@ func saveConfig() {
     # Mode: "path" copies the file path, "image" copies the image data
     mode: \(currentMode)
 
-    # Global hotkey to toggle between path and image mode
+    # Global hotkey to toggle modes, or copy the most recent screenshot image in path mode
     # Format: modifier+modifier+key
     # Supported modifiers: cmd, shift, ctrl, option
     hotkey: \(currentHotkey)
@@ -108,7 +111,17 @@ func copyImageAndNotify(_ path: String) {
     showNotification(title: "Screenshot", message: "Image copied: \(basename)")
 }
 
+func recentScreenshotPath() -> String? {
+    guard let lastScreenshotPath, let lastScreenshotDetectedAt else { return nil }
+    guard Date().timeIntervalSince(lastScreenshotDetectedAt) <= recentScreenshotWindow else { return nil }
+    guard FileManager.default.fileExists(atPath: lastScreenshotPath) else { return nil }
+    return lastScreenshotPath
+}
+
 func handleScreenshot(_ path: String) {
+    lastScreenshotPath = path
+    lastScreenshotDetectedAt = Date()
+
     if currentMode == "image" {
         copyImageAndNotify(path)
     } else {
@@ -178,10 +191,16 @@ func setupHotkey() {
     let runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
     CFRunLoopAddSource(CFRunLoopGetMain(), runLoopSource, .commonModes)
     CGEvent.tapEnable(tap: tap, enable: true)
-    fputs("Hotkey '\(currentHotkey)' registered for mode toggle\n", stderr)
+    fputs("Hotkey '\(currentHotkey)' registered\n", stderr)
 }
 
 func toggleMode() {
+    if currentMode == "path", let path = recentScreenshotPath() {
+        copyImageAndNotify(path)
+        fputs("Copied recent screenshot image without changing mode\n", stderr)
+        return
+    }
+
     currentMode = (currentMode == "path") ? "image" : "path"
     saveConfig()
     let label = currentMode == "path" ? "Copy Path" : "Copy Image"
