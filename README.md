@@ -36,7 +36,7 @@ brew services stop hboon/tap/shotpath
 **Requirements:** Xcode Command Line Tools (`xcode-select --install`)
 
 ```sh
-git clone https://github.com/lingster/shotpath.git
+git clone https://github.com/hboon/shotpath.git
 cd shotpath
 make
 sudo make install
